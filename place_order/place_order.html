@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+
+  <!--    Favicons-->
+  <!-- ===============================================-->
+  <link rel="apple-touch-icon" sizes="180x180" href="../assets/img/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="../assets/img/favicons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../assets/img/favicons/favicon-16x16.png">
+  <link rel="shortcut icon" type="image/x-icon" href="../assets/img/favicons/favicon.ico">
+  <link rel="manifest" href="../assets/img/favicons/manifest.json">
+  <meta name="msapplication-TileImage" content="../assets/img/favicons/mstile-150x150.png">
+  <meta name="theme-color" content="#ffffff">
+
+  <!-- ===============================================-->
+  <!--    Stylesheets-->
+  <!-- ===============================================-->
+  <link href="../assets/css/theme.css" rel="stylesheet" />
+
+  <link href="./checkout.css" />
+
+  <!-- <link rel="stylesheet" href="./vendors/bootstrap/bootstrap.min.js" crossorigin="anonymous"> -->
+  <script src="../vendors/bootstrap/bootstrap.min.js"></script>
+  <link href="../vendors/fontawesome/all.min.js" rel="stylesheet">
+  <link href="../assets/css/login.css" rel="stylesheet">
+  <script src="https://js.stripe.com/v3/"></script>
+  <script src="./checkout.js" defer></script>
+
+
+  <title>Place Order</title>
+
+  <style>
+    #content {
+      display: grid;
+      grid-template-columns: 50% 50%;
+      margin: 0 auto;
+    }
+
+    #content div {
+      margin: 20px;
+    }
+
+    #PlaceOrder {
+      margin: 45%;
+    }
+  </style>
+</head>
+
+<!-- <body onload="checkLogin()" class="bg-default"> -->
+
+<body>
+  <!-------------------------------------------------------------- NAVBAR ---------------------------------------------------->
+  <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top" data-navbar-on-scroll="data-navbar-on-scroll">
+    <div class="container"><a class="navbar-brand d-inline-flex" href="../index.html">
+        <h2 class="text-1000 fs-3 fw-bold ms-2 text-gradient">Mystery Food Box</h2>
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span
+          class="navbar-toggler-icon"> </span></button>
+      <div class="collapse navbar-collapse border-top border-lg-0 my-2 mt-lg-0" id="navbarSupportedContent">
+        <div class="mx-auto pt-5 pt-lg-0 d-block d-lg-none d-xl-block">
+          <p class="mb-0 fw-bold text-lg-center">Deliver to: <i
+              class="fas fa-map-marker-alt text-warning mx-2"></i><span class="fw-normal">Current Location
+            </span><span>Mirpur 1 Bus Stand, Dhaka</span></p>
+        </div>
+        <form class="d-flex mt-4 mt-lg-0 ms-lg-auto ms-xl-0">
+          <div class="input-group-icon pe-2" style="height: 20%;"><i
+              class="fas fa-search input-box-icon text-primary"></i>
+            <input class="form-control border-0 input-box bg-100" type="search" placeholder="Search Food"
+              aria-label="Search" />
+          </div>
+          <div class="dropdown">
+            <button class="btn btn-white shadow-warning text-warning dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i
+                class="fas fa-user me-2"></i>Profile</button>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href=".\refund.html">Past Orders</a></li>
+                </ul>
+          </div>
+          <div class="input-group-icon pe-2">
+            <button class="btn btn-white shadow-warning text-warning" type="submit">
+              <a id="logout" style="cursor: pointer;"><i class="fas fa-sign-out-alt me-2"></i>Logout</a>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </nav>
+
+  <!-- <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
+<body class="bg-default"> -->
+  <div class="main-content">
+    <div class="header bg-gradient-primary py-7 py-lg-8">
+      <div class="container">
+        <div class="header-body text-center mb-7">
+          <div class="row justify-content-center">
+            <div class="col-lg-5 col-md-6">
+              <h1 class="text-white">Mystery Food Box</h1>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="mt--8 pb-5">
+      <div class="card bg-secondary shadow border-0">
+        <div class="card-header bg-transparent pb-5">
+          <div class="text-muted text-center mt-2 mb-3">View your order</div>
+          <div id="content">
+            <div><img src="../assets/img/gallery/mystery_image.jpg" width="100%" height="auto" /></div>
+            <div id="app">
+              <a style="font-weight:bold; font-size:23px;" id="Name">Name: </a> <a style="font-size:20px;">
+                {{boxName}}</a><br>
+
+              <a style="font-weight:bold; font-size:23px;" id="Restaurent">Restaurant: </a><a style="font-size:20px;">
+                {{ restaurant }}</a><br>
+
+              <a style="font-weight:bold; font-size:23px;" id="Location">Location: </a><a style="font-size:20px;">
+                {{ location }}</a><br>
+
+              <a style="font-weight:bold; font-size:23px;" id="CollectionTime">Collection Time: </a><a
+                style="font-size:20px;">
+                {{ collectionTime }}</a><br>
+              <a style="font-weight:bold; font-size:23px;" id="inventory">Current quantity available:
+              </a><a style="font-size:20px;">
+                {{ inventory }}</a><br>
+              <a style="font-weight:bold; font-size:23px;" id="price">Price:
+              </a><a style="font-size:20px;">
+                {{ price }}</a><br>
+              <br>
+              <h1 class="text-center">Enter your details:</h1>
+
+              <div>
+                <div class="mb-3">
+                  <label for="quantity" class="form-label">Quantity</label>
+                  <input type="number" class="form-control" id="quantity" v-model="quantity"
+                    aria-describedby="numberHelp">
+                  <span id="numberHelp" style="font-size:14px;">{{quantityMsg}}
+                  </span>
+                </div>
+                <div class="mb-3">
+                  <label for="customer-number" class="form-label">Contact Number</label>
+                  <input type="number" class="form-control" id="customer-number" v-model="customerNumber">
+                </div>
+                <div class="mb-3 form-check">
+                  <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                  <label class="form-check-label" for="exampleCheck1">I love food</label>
+                </div>
+              </div>
+
+              <h1 class="text-center">Payment method:</h1>
+              <form id="payment-form" @submit.prevent="submitForm" sandbox="allow-same-origin">
+                <div id="payment-element" sandbox="allow-same-origin">
+                  <!-- Elements will create form elements here -->
+                </div>
+
+                <button id="submit" class="btn btn-primary">
+
+                  <span id="button-text">Place Order</span>
+                </button>
+                <div id="payment-message" class="hidden" sandbox="allow-same-origin">
+                  <!-- Display error message to your customers here -->
+                  {{paymentMessage}}
+
+                </div>
+              </form>
+
+
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+
+  <!---------------------------------------- FIREBASE -------------------------------------------->
+  <script>
+    function checkLogin() {
+      if (localStorage.getItem('uid') == null) {
+        window.location.href = 'login.html';
+      }
+    }
+    console.log(localStorage.getItem('uid'))
+    // constant for account login
+
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const boxID = urlParams.get('boxID');
+  </script>
+
+
+  <!---------------------------------------- FIREBASE FOR LOGOUT -------------------------------------------->
+  <script src="https://www.gstatic.com/firebasejs/9.12.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.12.1/firebase-firestore-compat.js"></script>
+  <script type="module">
+
+    // ----------------------------------------------------LOGOUT-----------------------------------------------//
+      // Import the functions you need from the SDKs you need
+      import {initializeApp} from "https://www.gstatic.com/firebasejs/9.12.1/firebase-app.js";
+      import {
+        getAuth,
+        browserLocalPersistence,
+        signInWithPopup,
+        GoogleAuthProvider,
+        signOut,
+        setPersistence
+      } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-auth.js";
+      //import {getDatabase, set, ref, update} from "https://www.gstatic.com/firebasejs/9.12.1/firebase-database.js";
+
+
+      // TODO: Add SDKs for Firebase products that you want to use
+      // https://firebase.google.com/docs/web/setup#available-libraries
+
+      // Your web app's Firebase configuration
+      const firebaseConfig = {
+          // Your configs
+              apiKey: "AIzaSyCLWmg-X8gl75JxCVz57jOIekeqSUk6XUY",
+              authDomain: "adventuretime-934a2.firebaseapp.com",
+              projectId: "adventuretime-934a2",
+              storageBucket: "adventuretime-934a2.appspot.com",
+              messagingSenderId: "168230082500",
+              appId: "1:168230082500:web:6fbd2239d875c99c467691",
+              measurementId: "G-MXMNLZZLM8",
+              databaseURL: "https://adventuretime-934a2-default-rtdb.asia-southeast1.firebasedatabase.app/",
+      };
+
+      // Initialize Firebase
+        const firebaseApp = initializeApp(firebaseConfig);
+        const auth = getAuth();
+        const provider = new GoogleAuthProvider();
+        document.getElementById('logout')
+        .addEventListener('click', function () {
+            signOut(auth).then(() => {
+              //alert("Sign out successful")
+              localStorage.removeItem('uid')
+              sessionStorage.setItem('logout', true)
+              window.location.href = 'login.html'
+            }).catch((error) => {
+                // An error happened.
+                console.log(error);
+            });
+        });
+    </script>
+  <!-- ------------------------------------------------end of firebase----------------------------------------------------------- -->
+  <!-- <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script> -->
+  <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.js"></script>
+
+  <script>
+    const {
+      createApp
+    } = Vue
+
+    createApp({
+      data() {
+        return {
+          restaurant: "Subway",
+          // NOTE would this be the RESTAURANT NAME or the BOX NAME?
+          // are both coordinated as well
+          boxName: "",
+          location: "",
+          collectionTime: "2023-03-26 21:43:02",
+          boxID: null, // NOTE need to generate from ui
+          customerID: localStorage.getItem('uid'),
+          // need help with getting this customer ID from local= storage somehow its null
+          quantity: 1,
+          price: 0,
+          inventory: 0,
+          customerNumber: 0,
+          restaurantID: 0,
+          box_url: "http://localhost:8000/api/v1/box",
+          restaurant_url: "http://localhost:8000/api/v1/restaurant",
+          paymentMessage: "",
+          place_order_URL: "http://localhost:8000/api/v1/place_order"
+        }
+      },
+
+      computed: {
+        quantityMsg() {
+          if (this.quantity > this.inventory) {
+            return "There is insufficient quantity of boxes. Please enter a valid quantity that is within the current quantity available."
+          } else {
+            return "Please enter a valid number :)"
+          }
+        }
+      },
+      methods: {
+        getBoxInfo() {
+          const response =
+            fetch(`${this.box_url}/${this.boxID}`)
+            .then(response => response.json())
+            .then(data => {
+              console.log(response);
+              if (data.code === 404) {
+                // no book in db
+                console.log(data.message);
+              } else {
+                console.log(this.boxID);
+                this.restaurantID = data.data.restaurant_id;
+                this.collectionTime = data.data.collectionTime;
+                this.inventory = data.data.quantity;
+                this.boxName = data.data.boxName;
+                this.price = data.data.price;
+                this.getRestaurantInfo()
+
+              }
+            })
+            .catch(error => {
+              // Errors when calling the service; such as network error, 
+              // service offline, etc
+              console.log(this.message + error);
+
+            });
+        },
+        getRestaurantInfo() {
+          const response =
+            fetch(`${this.restaurant_url}/${this.restaurantID}`)
+            .then(response => response.json())
+            .then(data => {
+              console.log(response);
+              if (data.code === 404) {
+                // no book in db
+                console.log(data.message);
+              } else {
+                this.location = data.data.restaurant_location;
+                this.restaurant = data.data.restaurant_name;
+
+
+              }
+            })
+            .catch(error => {
+              // Errors when calling the service; such as network error, 
+              // service offline, etc
+              console.log(this.message + error);
+
+            });
+        },
+        async submitForm() {
+          // Trigger form validation and wallet collection
+          const {
+            error: submitError
+          } = await elements.submit();
+          if (submitError) {
+            handleError(submitError);
+            return;
+          }
+          console.log("submitted please");
+          console.log(this.customerID);
+
+          await fetch(this.place_order_URL, {
+              method: "POST",
+              headers: {
+                "Content-type": "application/json"
+              },
+              body: JSON.stringify({
+                "boxID": this.boxID,
+                "quantity": this.quantity,
+                "customer_number": this.customerNumber,
+                "customer_id": this.customerID,
+                "restaurant_name": this.restaurant,
+                // sent restaurant name for msg notification, not to be stored in Order
+                "restaurant_id": this.restaurantID,
+                "total_bill": this.price,
+                // NOTE: generate from UI
+                "currency": "sgd",
+                "collection_time": this.collectionTime,
+                "location": this.location
+
+              })
+            })
+            .then(response => response.json())
+            .then(data => {
+              console.log(data);
+              result = data.data;
+              console.log(result);
+
+              if (data.code == 201) {
+                this.handleSubmit(result["client_secret"]);
+              } else {
+                this.paymentMessage = data.message
+              }
+            })
+            .catch(error => {
+              console.log("Problem in placing an order. " + error);
+            })
+
+
+        },
+        async handleSubmit(clientSecret) {
+          console.log("handle Submit");
+          console.log(clientSecret);
+
+
+          const {
+            error
+          } = await stripe.confirmPayment({
+            elements,
+            clientSecret,
+            confirmParams: {
+              // Make sure to change this to your payment completion page
+              return_url: "http://localhost/esdProject/success.html",
+
+            },
+          });
+          console.log(error);3
+
+          // This point will only be reached if there is an immediate error when
+          // confirming the payment. Otherwise, your customer will be redirected to
+          // your `return_url`. 
+          if (error.type === "card_error" || error.type === "validation_error") {
+            this.showMessage(error.message);
+          } else {
+            this.showMessage("An unexpected error occurred.");
+          }
+        },
+        showMessage(messageText) {
+          const messageContainer = document.querySelector("#payment-message");
+
+          messageContainer.classList.remove("hidden");
+          messageContainer.textContent = messageText;
+
+          setTimeout(function () {
+            messageContainer.classList.add("hidden");
+            messageText.textContent = "";
+          }, 4000);
+        },
+
+      },
+      created() {
+
+        const boxID = localStorage.getItem('boxID');
+        this.boxID = boxID;
+        this.getBoxInfo();
+      },
+      // mounted() {
+      //   const queryString = window.location.search;
+      //   const urlParams = new URLSearchParams(queryString);
+      //   this.boxID = urlParams.get('boxID');
+      //   console.log(urlParams)
+      //   console.log(boxID);
+      // }
+    }).mount('#app')
+  </script>
+
+  <!-- ===============================================-->
+  <!--    JavaScripts-->
+  <!-- ===============================================-->
+  <script src="../vendors/@popperjs/popper.min.js"></script>
+  <script src="../vendors/bootstrap/bootstrap.min.js"></script>
+  <script src="../vendors/is/is.min.js"></script>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=window.scroll"></script>
+  <script src="../vendors/fontawesome/all.min.js"></script>
+  <script src="../assets/js/theme.js"></script>
+  <script src='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js'
+    integrity='sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM' crossorigin='anonymous'>
+  </script>
+
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@200;300;400;600;700;900&amp;display=swap"
+    rel="stylesheet">
+</body>
+
+</html>

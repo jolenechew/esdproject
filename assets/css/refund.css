@@ -1,0 +1,26 @@
+#content{
+    display: grid;
+    grid-template-columns: 50% 50%;
+    margin: 0 auto;
+}
+#refund {
+    margin: 47%;
+}
+table, th,td {
+      border: 3px solid orange;
+}
+table {
+      width: 100%;
+      font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif
+}
+table tr td button:enabled{
+      background-color: orange;
+}
+button:disabled{
+      background-color: grey;
+}
+th{
+    font-size: large;
+    height: 60px;
+    text-align: center;
+}
